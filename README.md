@@ -116,21 +116,31 @@ frontend-rekadigital/
 ├── app/                              # Next.js App Router directory
 │   ├── layout.tsx                    # Root layout wrapping all pages with providers
 │   ├── globals.css                   # Global styles, animations, and Tailwind configuration
-│   ├── page.tsx                      # Homepage - Server Component fetching products
+│   ├── page.tsx                      # Homepage with product catalog
 │   ├── not-found.tsx                 # Custom 404 page
+│   ├── about/
+│   │   └── page.tsx                  # About page
+│   ├── blog/
+│   │   └── page.tsx                  # Blog page
 │   ├── cart/
 │   │   └── page.tsx                  # Shopping cart page
-│   └── product/
-│       └── [id]/
-│           └── page.tsx              # Product detail - Server Component with dynamic routing
+│   ├── collections/
+│   │   └── page.tsx                  # Collections page
+│   ├── contact/
+│   │   └── page.tsx                  # Contact page
+│   ├── product/
+│   │   └── [id]/
+│   │       └── page.tsx              # Product detail with dynamic routing
+│   └── shop/
+│       └── page.tsx                  # Shop page
 ├── components/                       # Reusable UI components organized by feature
 │   ├── cart/                         # Shopping cart functionality
-│   │   └── CartClient.tsx            # Cart page with quantity controls and order summary
+│   │   └── CartClient.tsx            # Cart page with responsive layout
 │   ├── filter/                       # Filtering functionality
 │   │   ├── Sidebar.tsx               # Desktop sidebar with category and price filters
 │   │   └── MobileFilterDrawer.tsx    # Mobile slide-out filter panel
 │   ├── home/                         # Homepage-specific components
-│   │   └── HomeClient.tsx            # Client component managing home page state
+│   │   └── HomeClient.tsx            # Client component with TanStack Query fetching
 │   ├── layout/                       # Application-wide layout components
 │   │   ├── Navbar.tsx                # Navigation bar with search, cart badge, and mobile menu
 │   │   ├── Footer.tsx                # Site footer with links and social icons
@@ -139,7 +149,8 @@ frontend-rekadigital/
 │   ├── product/                      # Product-related components
 │   │   ├── ProductCard.tsx           # Individual product card with hover animations
 │   │   ├── ProductGrid.tsx           # Responsive product grid with sorting
-│   │   └── ProductDetail.tsx         # Full product detail with add to cart and image gallery
+│   │   ├── ProductDetail.tsx         # Legacy product detail (Server Component)
+│   │   └── ProductDetailClient.tsx   # Product detail with client-side fetching
 │   ├── search/                       # Search functionality
 │   │   └── SearchModal.tsx           # Modal search with real-time filtering
 │   └── ui/                           # Shared UI components
@@ -173,15 +184,16 @@ The application includes the following features that demonstrate modern frontend
 - **Product Catalog**: Responsive product grid displaying items from FakeStore API with images, ratings, prices, and descriptions
 - **Category Filtering**: Filter products by category (Men's & Women's Fashion, Shoes & Accessories, Electronics) with real-time updates
 - **Price Range Filtering**: Filter products by price ranges in Indonesian Rupiah (IDR)
-- **Product Detail Pages**: Dynamic routing with server-side rendering for SEO, image gallery with variations, and related products section
+- **Product Detail Pages**: Dynamic routing with client-side fetching, image gallery with variations, and related products section
 
 ### Shopping Cart
 
-- **Add to Cart**: Users can add products to the cart with quantity selection
+- **Add to Cart**: Users can add products to the cart with quantity selection and loading animation
 - **Persistent Cart**: Cart data persists across page refreshes using localStorage through redux-persist
 - **Cart Management**: Update quantities, remove items, or clear the entire cart
 - **Cart Badge**: Real-time cart item count displayed in the navigation bar with bounce animation
 - **Order Summary**: Subtotal, shipping (free), and total calculation on the cart page
+- **Responsive Layout**: Mobile-optimized layout with stacked items, desktop layout with side-by-side display
 
 ### Search Functionality
 
@@ -195,7 +207,7 @@ The application includes the following features that demonstrate modern frontend
 
 - **Product Card Hover**: Cards lift up with shadow enhancement and image zoom effect
 - **Image Gallery**: Smooth transitions between product images with scale animations
-- **Add to Cart Feedback**: Button changes to green with checkmark and "Added to Cart!" text
+- **Add to Cart Feedback**: Loading spinner animation, then green checkmark with "Added to Cart!" text
 - **Wishlist Toggle**: Heart icon fills with red and scales when activated
 - **Navigation Links**: Underline animation on hover for navigation items
 - **Cart Badge**: Bounce animation when items are added
@@ -243,28 +255,25 @@ The root cause is the fundamental difference between server and client environme
 
 The following solutions were implemented to resolve hydration issues while maintaining cart persistence:
 
-#### Solution 1: Client Component Directive
+#### Solution 1: Client-Side Data Fetching
 
-All components that interact with Redux state must be marked as Client Components using the `"use client"` directive. This directive tells Next.js that these components should only run on the client side, preventing any server-side rendering of stateful logic.
+All data fetching is performed on the client side using TanStack Query instead of Server Components. This approach ensures that API calls are made from the user's browser rather than from the server, which resolves deployment issues with external APIs.
 
 ```tsx
 // components/home/HomeClient.tsx
 "use client";
 
-import { useAppSelector } from "@/hooks";
+import { useProducts } from "@/hooks/useProducts";
 
 export default function HomeClient() {
-  const cartItems = useAppSelector((state) => state.cart.items);
+  const { data: products, isLoading, error } = useProducts();
   
-  return (
-    <div>
-      {/* Component content */}
-    </div>
-  );
+  if (isLoading) return <LoadingSpinner />;
+  if (error) return <ErrorMessage />;
+  
+  return <ProductGrid products={products} />;
 }
 ```
-
-By using `"use client"`, the component is excluded from server-side rendering, which means it will not attempt to read from `localStorage` on the server.
 
 #### Solution 2: Provider Architecture with useRef
 
@@ -293,10 +302,6 @@ export default function ReduxProvider({ children }: { children: React.ReactNode 
   );
 }
 ```
-
-The `useRef` hook ensures that the store and persistor are created only once and remain the same reference throughout the component lifecycle. Without `useRef`, new instances would be created on every render, causing the persist-gate to re-initialize and potentially trigger hydration errors.
-
-The `PersistGate` component with `loading={null}` ensures that child components are not rendered until the persisted state has been rehydrated from `localStorage`. This prevents components from rendering with the default (empty) state before the persisted state is available.
 
 #### Solution 3: Redux Store Configuration with Persistence
 
@@ -334,10 +339,6 @@ export const makeStore = () =>
   });
 ```
 
-The `whitelist` configuration ensures that only the cart state is persisted to `localStorage`, while filter state is reset on each page load. The `ignoredActions` configuration prevents Redux from logging warnings about non-serializable values in persist-related actions.
-
-The `makeStore` function is exported as a factory function rather than a singleton. This allows the `ReduxProvider` to create the store instance using `useRef`, ensuring proper initialization within the React component lifecycle.
-
 #### Solution 4: Safe localStorage Access Pattern
 
 When components need to access `localStorage` directly, a mounted state pattern is used to ensure the component only renders client-side content after mounting:
@@ -364,34 +365,18 @@ export default function CartBadge() {
 }
 ```
 
-This pattern ensures that the component renders a neutral placeholder during server rendering and initial client render, then switches to the actual content once the component has mounted and `localStorage` is accessible.
-
-#### Solution 5: Selective Hydration Suppression
-
-For components where intentional differences between server and client rendering are acceptable, the `suppressHydrationWarning` attribute can be applied:
-
-```tsx
-<div suppressHydrationWarning>
-  {cartItems.length > 0 && <CartBadge count={cartItems.length} />}
-</div>
-```
-
-This attribute tells React to not warn about specific hydration mismatches for this element and its descendants. It should be used sparingly and only when the difference is intentional and does not affect the application's functionality.
-
 ### Summary of Hydration Handling Approach
 
 The implementation uses a multi-layered approach to handle hydration issues:
 
 | Layer | Technique | Purpose |
 |-------|-----------|---------|
+| Data Fetching | Client-side with TanStack Query | Avoids server-side API calls that may fail on deployment |
 | Component Level | `"use client"` directive | Prevents server-side rendering of stateful components |
 | Provider Level | `useRef` for store/persistor | Maintains stable instances across re-renders |
 | Render Level | `PersistGate` with `loading={null}` | Delays rendering until state is rehydrated |
 | State Level | `whitelist` in persist config | Only persists necessary state (cart) |
 | Access Level | Mounted state pattern | Safe access to browser-only APIs |
-| Warning Level | `suppressHydrationWarning` | Handles intentional server/client differences |
-
-This comprehensive approach ensures that the cart persistence feature works reliably without causing hydration errors, providing a smooth user experience across page refreshes and navigation.
 
 ## Routes
 
@@ -400,6 +385,23 @@ This comprehensive approach ensures that the cart persistence feature works reli
 | `/` | Homepage with product catalog, filtering, and hero section |
 | `/product/[id]` | Product detail page with image gallery, add to cart, and related products |
 | `/cart` | Shopping cart page with item management and order summary |
+| `/shop` | Shop page (placeholder) |
+| `/about` | About page (placeholder) |
+| `/blog` | Blog page (placeholder) |
+| `/contact` | Contact page (placeholder) |
+| `/collections` | Collections page (placeholder) |
+
+## Deployment
+
+### Vercel Deployment
+
+This project is configured for deployment on Vercel. The key configuration for successful deployment:
+
+1. **Client-Side Data Fetching**: All API calls are made from the client side using TanStack Query, avoiding server-side fetch issues with external APIs.
+
+2. **Dynamic Routes**: Product detail pages use `force-dynamic` rendering to ensure fresh data on each request.
+
+3. **Environment Variables**: Set `NEXT_PUBLIC_API_URL=https://fakestoreapi.com` in the Vercel dashboard under Settings > Environment Variables.
 
 ## API Integration
 

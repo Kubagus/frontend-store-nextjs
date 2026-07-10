@@ -71,7 +71,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
       <Navbar />
 
       {/* Breadcrumb */}
-      <div className="max-w-[1440px] mx-auto w-full px-4 md:px-8 lg:px-[248px] py-3 md:py-4">
+      <div className="max-w-[1440px] mx-auto w-full px-4 md:px-8 lg:px-12 xl:px-[248px] py-3 md:py-4">
         <div className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm">
           <Link href="/" className="text-[#64748B] hover:text-primary transition-colors">Home</Link>
           <ChevronRight className="w-3 h-3 text-[#64748B]" />
@@ -82,7 +82,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
       </div>
 
       {/* Product Detail */}
-      <main className="max-w-[1440px] mx-auto w-full px-4 md:px-8 lg:px-[248px] py-4 md:py-8 grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-6 lg:gap-10 items-start">
+      <main className="max-w-[1440px] mx-auto w-full px-4 md:px-8 lg:px-12 xl:px-[248px] py-4 md:py-8 grid grid-cols-1 xl:grid-cols-[1fr_420px] gap-6 xl:gap-10 items-start">
         {/* Left - Images */}
         <div className="w-full">
           {/* Main Image */}
@@ -294,7 +294,7 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (
-        <section className="max-w-[1440px] mx-auto w-full px-4 md:px-8 lg:px-[248px] py-6 md:py-8 lg:py-12">
+        <section className="max-w-[1440px] mx-auto w-full px-4 md:px-8 lg:px-12 xl:px-[248px] py-6 md:py-8 lg:py-12">
           <div className="flex items-center justify-between mb-6 md:mb-8">
             <h2 className="text-xl md:text-2xl font-semibold text-heading tracking-tight">
               You might also like

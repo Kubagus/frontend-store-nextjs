@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Star, ChevronLeft, ChevronRight, Heart, Minus, Plus, Check, ShoppingCart } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight, Heart, Minus, Plus, Check, ShoppingCart, Loader2 } from "lucide-react";
 import TopBanner from "@/components/layout/TopBanner";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -39,6 +39,7 @@ function StarRating({ rating }: { rating: number }) {
 export default function ProductDetailClient({ product, relatedProducts }: ProductDetailClientProps) {
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const dispatch = useAppDispatch();
@@ -50,10 +51,16 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
     { src: product.image, alt: `${product.title} - View 4`, transform: "scale(1.08) translateX(3%)" },
   ];
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
+    setIsLoading(true);
+    // Simulate API call delay
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    
     for (let i = 0; i < quantity; i++) {
       dispatch(addToCart(product));
     }
+    
+    setIsLoading(false);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   };
@@ -226,16 +233,23 @@ export default function ProductDetailClient({ product, relatedProducts }: Produc
           {/* Add to Cart Button */}
           <button
             onClick={handleAddToCart}
-            disabled={addedToCart}
+            disabled={isLoading || addedToCart}
             className={`w-full h-12 font-medium text-sm lg:text-base rounded-[10px] shadow-[0px_4px_6px_rgba(0,0,0,0.1),0px_2px_4px_rgba(0,0,0,0.1)] transition-all duration-300 mb-5 lg:mb-6 flex items-center justify-center gap-2 ${
               addedToCart
-                ? "bg-green-500 text-white scale-[1.02]"
+                ? "bg-green-500 text-white"
+                : isLoading
+                ? "bg-primary text-white cursor-wait"
                 : "bg-primary text-white hover:bg-primary-dark hover:scale-[1.02] active:scale-[0.98]"
             }`}
           >
-            {addedToCart ? (
+            {isLoading ? (
               <>
-                <Check className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Adding...
+              </>
+            ) : addedToCart ? (
+              <>
+                <Check className="w-5 h-5" />
                 Added to Cart!
               </>
             ) : (

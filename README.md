@@ -2,12 +2,14 @@
 
 This repository contains a frontend technical test project for a Frontend Developer position. The project is an e-commerce marketplace application built with modern web technologies, demonstrating proficiency in Next.js, TypeScript, state management, and responsive design implementation.
 
-The application fetches product data from FakeStore API and presents it through a clean, responsive interface with filtering capabilities and persistent cart functionality.
+The application fetches product data from FakeStore API and presents it through a clean, responsive interface with filtering capabilities, persistent cart functionality, and search features.
 
 ## Author
 
 [![GitHub](https://img.shields.io/badge/GitHub-Kubagus-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Kubagus)
+
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-kubagus-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/kubagus/)
+
 [![Email](https://img.shields.io/badge/Email-ahmad@kubagus.my.id-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:ahmad@kubagus.my.id)
 
 ## Technologies Used
@@ -113,31 +115,33 @@ The project follows a feature-based architecture pattern, organizing code by dom
 frontend-rekadigital/
 ├── app/                              # Next.js App Router directory
 │   ├── layout.tsx                    # Root layout wrapping all pages with providers
-│   ├── globals.css                   # Global styles and Tailwind configuration
+│   ├── globals.css                   # Global styles, animations, and Tailwind configuration
 │   ├── page.tsx                      # Homepage - Server Component fetching products
 │   ├── not-found.tsx                 # Custom 404 page
-│   ├── shop/
-│   │   └── page.tsx                  # Shop page - Server Component with product listing
+│   ├── cart/
+│   │   └── page.tsx                  # Shopping cart page
 │   └── product/
 │       └── [id]/
 │           └── page.tsx              # Product detail - Server Component with dynamic routing
 ├── components/                       # Reusable UI components organized by feature
+│   ├── cart/                         # Shopping cart functionality
+│   │   └── CartClient.tsx            # Cart page with quantity controls and order summary
 │   ├── filter/                       # Filtering functionality
 │   │   ├── Sidebar.tsx               # Desktop sidebar with category and price filters
 │   │   └── MobileFilterDrawer.tsx    # Mobile slide-out filter panel
 │   ├── home/                         # Homepage-specific components
 │   │   └── HomeClient.tsx            # Client component managing home page state
 │   ├── layout/                       # Application-wide layout components
-│   │   ├── Navbar.tsx                # Navigation bar with mobile menu
+│   │   ├── Navbar.tsx                # Navigation bar with search, cart badge, and mobile menu
 │   │   ├── Footer.tsx                # Site footer with links and social icons
 │   │   ├── Hero.tsx                  # Hero banner section
 │   │   └── TopBanner.tsx             # Promotional top banner
 │   ├── product/                      # Product-related components
-│   │   ├── ProductCard.tsx           # Individual product card for grid display
+│   │   ├── ProductCard.tsx           # Individual product card with hover animations
 │   │   ├── ProductGrid.tsx           # Responsive product grid with sorting
-│   │   └── ProductDetail.tsx         # Full product detail page component
-│   ├── shop/                         # Shop page components
-│   │   └── ShopClient.tsx            # Client component managing shop state
+│   │   └── ProductDetail.tsx         # Full product detail with add to cart and image gallery
+│   ├── search/                       # Search functionality
+│   │   └── SearchModal.tsx           # Modal search with real-time filtering
 │   └── ui/                           # Shared UI components
 │       └── Newsletter.tsx            # Newsletter subscription section
 ├── hooks/                            # Custom React hooks
@@ -159,6 +163,53 @@ frontend-rekadigital/
 ├── .env                              # Environment variables (not committed to git)
 └── package.json                      # Project dependencies and scripts
 ```
+
+## Features
+
+The application includes the following features that demonstrate modern frontend development practices:
+
+### Core E-Commerce Features
+
+- **Product Catalog**: Responsive product grid displaying items from FakeStore API with images, ratings, prices, and descriptions
+- **Category Filtering**: Filter products by category (Men's & Women's Fashion, Shoes & Accessories, Electronics) with real-time updates
+- **Price Range Filtering**: Filter products by price ranges in Indonesian Rupiah (IDR)
+- **Product Detail Pages**: Dynamic routing with server-side rendering for SEO, image gallery with variations, and related products section
+
+### Shopping Cart
+
+- **Add to Cart**: Users can add products to the cart with quantity selection
+- **Persistent Cart**: Cart data persists across page refreshes using localStorage through redux-persist
+- **Cart Management**: Update quantities, remove items, or clear the entire cart
+- **Cart Badge**: Real-time cart item count displayed in the navigation bar with bounce animation
+- **Order Summary**: Subtotal, shipping (free), and total calculation on the cart page
+
+### Search Functionality
+
+- **Modal Search**: Click the search icon to open a search modal overlay
+- **Real-time Filtering**: Search products by name, category, or description as you type
+- **Cached Results**: Product data is cached using TanStack Query for faster subsequent searches
+- **Keyboard Navigation**: Press Escape to close the search modal
+- **Result Preview**: Product thumbnails, names, categories, and prices displayed in search results
+
+### Micro-Interactions and Animations
+
+- **Product Card Hover**: Cards lift up with shadow enhancement and image zoom effect
+- **Image Gallery**: Smooth transitions between product images with scale animations
+- **Add to Cart Feedback**: Button changes to green with checkmark and "Added to Cart!" text
+- **Wishlist Toggle**: Heart icon fills with red and scales when activated
+- **Navigation Links**: Underline animation on hover for navigation items
+- **Cart Badge**: Bounce animation when items are added
+- **Page Transitions**: Fade-in animations for content loading
+- **Quantity Controls**: Background color changes on hover for +/- buttons
+- **Mobile Menu**: Slide animation for mobile navigation drawer
+
+### Responsive Design
+
+- **Mobile-First Approach**: Optimized layout for mobile devices with single-column product grid
+- **Tablet Support**: Two-column product grid with adapted spacing
+- **Desktop Layout**: Three-column product grid with sidebar filters
+- **Mobile Filter Drawer**: Slide-out filter panel for mobile devices
+- **Sticky Navigation**: Navigation bar remains visible while scrolling
 
 ## Handling Hydration Issues with Cart Persistence
 
@@ -342,16 +393,13 @@ The implementation uses a multi-layered approach to handle hydration issues:
 
 This comprehensive approach ensures that the cart persistence feature works reliably without causing hydration errors, providing a smooth user experience across page refreshes and navigation.
 
-## Features
+## Routes
 
-The application includes the following features that demonstrate modern frontend development practices:
-
-- **Responsive Product Catalog**: A filterable product grid that adapts from single-column mobile layout to three-column desktop layout
-- **Category and Price Filtering**: Real-time filtering with Redux state management and URL-based navigation
-- **Product Detail Pages**: Dynamic routing with server-side rendering for SEO optimization and image gallery with simulated variations
-- **Persistent Cart State**: Shopping cart data persists across page refreshes using localStorage through redux-persist
-- **Mobile-First Design**: Responsive navigation with hamburger menu and slide-out filter drawer for mobile devices
-- **Server and Client Component Pattern**: Proper separation of concerns using Next.js App Router's Server Components for data fetching and Client Components for interactivity
+| Route | Description |
+|-------|-------------|
+| `/` | Homepage with product catalog, filtering, and hero section |
+| `/product/[id]` | Product detail page with image gallery, add to cart, and related products |
+| `/cart` | Shopping cart page with item management and order summary |
 
 ## API Integration
 

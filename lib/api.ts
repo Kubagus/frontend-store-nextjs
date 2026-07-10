@@ -4,8 +4,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://fakestoreapi.com";
 
 export async function getAllProducts(): Promise<Product[]> {
   const res = await fetch(`${BASE_URL}/products`, {
-    next: { revalidate: 3600 },
-    signal: AbortSignal.timeout(10000),
+    cache: "no-store",
   });
   if (!res.ok) throw new Error("Failed to fetch products");
   return res.json();
@@ -13,8 +12,7 @@ export async function getAllProducts(): Promise<Product[]> {
 
 export async function getProductById(id: number): Promise<Product> {
   const res = await fetch(`${BASE_URL}/products/${id}`, {
-    next: { revalidate: 3600 },
-    signal: AbortSignal.timeout(10000),
+    cache: "no-store",
   });
   if (!res.ok) throw new Error("Failed to fetch product");
   return res.json();
@@ -22,8 +20,7 @@ export async function getProductById(id: number): Promise<Product> {
 
 export async function getCategories(): Promise<string[]> {
   const res = await fetch(`${BASE_URL}/products/categories`, {
-    next: { revalidate: 3600 },
-    signal: AbortSignal.timeout(10000),
+    cache: "no-store",
   });
   if (!res.ok) throw new Error("Failed to fetch categories");
   return res.json();
@@ -31,8 +28,7 @@ export async function getCategories(): Promise<string[]> {
 
 export async function getProductsByCategory(category: string): Promise<Product[]> {
   const res = await fetch(`${BASE_URL}/products/category/${category}`, {
-    next: { revalidate: 3600 },
-    signal: AbortSignal.timeout(10000),
+    cache: "no-store",
   });
   if (!res.ok) throw new Error("Failed to fetch products by category");
   return res.json();

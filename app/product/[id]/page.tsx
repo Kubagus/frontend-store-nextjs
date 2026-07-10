@@ -1,9 +1,6 @@
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
-import ProductDetail from "@/components/product/ProductDetail";
-import { getProductById, getAllProducts } from "@/lib/api";
+import ProductDetailClient from "@/components/product/ProductDetailClient";
 
-// Force dynamic rendering - fetch on every request
 export const dynamic = "force-dynamic";
 
 interface Props {
@@ -11,32 +8,14 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  try {
-    const { id } = await params;
-    const product = await getProductById(Number(id));
-    if (!product) return { title: "Product Not Found" };
-    return {
-      title: `${product.title} - TJermin Marketplace`,
-      description: product.description,
-    };
-  } catch {
-    return { title: "Product Not Found" };
-  }
+  const { id } = await params;
+  return {
+    title: `Product #${id} - TJermin Marketplace`,
+    description: "Product detail page",
+  };
 }
 
 export default async function ProductPage({ params }: Props) {
-  try {
-    const { id } = await params;
-    const product = await getProductById(Number(id));
-    if (!product) notFound();
-
-    const allProducts = await getAllProducts();
-    const relatedProducts = allProducts
-      .filter((p) => p.category === product.category && p.id !== product.id)
-      .slice(0, 4);
-
-    return <ProductDetail product={product} relatedProducts={relatedProducts} />;
-  } catch (error) {
-    notFound();
-  }
+  const { id } = await params;
+  return <ProductDetailClient productId={Number(id)} />;
 }

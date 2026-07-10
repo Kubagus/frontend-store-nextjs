@@ -10,11 +10,8 @@ import Sidebar from "@/components/filter/Sidebar";
 import MobileFilterDrawer from "@/components/filter/MobileFilterDrawer";
 import ProductGrid from "@/components/product/ProductGrid";
 import Newsletter from "@/components/ui/Newsletter";
-import { Product } from "@/types";
-
-interface HomeClientProps {
-  initialProducts: Product[];
-}
+import { useProducts } from "@/hooks/useProducts";
+import { Loader2 } from "lucide-react";
 
 // Map custom categories to API categories
 // FakeStore API categories: electronics, jewelery, men's clothing, women's clothing
@@ -34,13 +31,17 @@ const priceRangeMap: Record<string, [number, number]> = {
   "Rp1.000.000 +": [62.5, Infinity],
 };
 
-export default function HomeClient({ initialProducts }: HomeClientProps) {
+export default function HomeClient() {
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [selectedPriceRange, setSelectedPriceRange] = useState("All Prices");
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
 
+  const { data: products, isLoading, error } = useProducts();
+
   const filteredProducts = useMemo(() => {
-    let filtered = initialProducts;
+    if (!products) return [];
+
+    let filtered = products;
 
     // Category filter using custom mapping
     if (selectedCategory !== "All Categories") {
@@ -61,7 +62,7 @@ export default function HomeClient({ initialProducts }: HomeClientProps) {
     }
 
     return filtered;
-  }, [initialProducts, selectedCategory, selectedPriceRange]);
+  }, [products, selectedCategory, selectedPriceRange]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -85,30 +86,52 @@ export default function HomeClient({ initialProducts }: HomeClientProps) {
         <h2 className="text-xl font-semibold text-heading">All Category</h2>
       </div>
 
-      {/* Catalog Section */}
-      <main className="max-w-[1440px] mx-auto px-4 lg:px-[248px] py-4 lg:py-12 flex flex-col lg:flex-row gap-6 lg:gap-8 w-full">
-        {/* Desktop Sidebar */}
-        <div className="hidden lg:block">
-          <Sidebar
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex-1 flex items-center justify-center py-20">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+            <p className="text-[#64748B]">Loading products...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && (
+        <div className="flex-1 flex items-center justify-center py-20">
+          <div className="text-center">
+            <p className="text-red-500 mb-2">Failed to load products</p>
+            <p className="text-sm text-[#64748B]">Please try again later</p>
+          </div>
+        </div>
+      )}
+
+      {/* Products */}
+      {!isLoading && !error && (
+        <main className="max-w-[1440px] mx-auto px-4 lg:px-[248px] py-4 lg:py-12 flex flex-col lg:flex-row gap-6 lg:gap-8 w-full">
+          {/* Desktop Sidebar */}
+          <div className="hidden lg:block">
+            <Sidebar
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              selectedPriceRange={selectedPriceRange}
+              onPriceRangeChange={setSelectedPriceRange}
+            />
+          </div>
+
+          {/* Mobile Filter Drawer */}
+          <MobileFilterDrawer
+            isOpen={filterDrawerOpen}
+            onClose={() => setFilterDrawerOpen(false)}
             selectedCategory={selectedCategory}
             onCategoryChange={setSelectedCategory}
             selectedPriceRange={selectedPriceRange}
             onPriceRangeChange={setSelectedPriceRange}
           />
-        </div>
 
-        {/* Mobile Filter Drawer */}
-        <MobileFilterDrawer
-          isOpen={filterDrawerOpen}
-          onClose={() => setFilterDrawerOpen(false)}
-          selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
-          selectedPriceRange={selectedPriceRange}
-          onPriceRangeChange={setSelectedPriceRange}
-        />
-
-        <ProductGrid products={filteredProducts} title="All Products" />
-      </main>
+          <ProductGrid products={filteredProducts} title="All Products" />
+        </main>
+      )}
 
       <Newsletter />
       <Footer />

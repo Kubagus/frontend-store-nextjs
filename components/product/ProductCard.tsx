@@ -45,23 +45,23 @@ function Badge({ type }: { type: string }) {
 export default function ProductCard({ product, badge }: ProductCardProps) {
   return (
     <Link href={`/product/${product.id}`}>
-      <div className="bg-white border border-[#E5E7EB] shadow-[0px_1px_3px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] rounded-[14px] overflow-hidden flex flex-col hover:shadow-lg transition-shadow cursor-pointer h-full">
+      <div className="bg-white border border-[#E5E7EB] shadow-[0px_1px_3px_rgba(0,0,0,0.1),0px_1px_2px_-1px_rgba(0,0,0,0.1)] rounded-[14px] overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer h-full group">
         {/* Image */}
-        <div className="relative bg-[#F8FAFC] h-[200px] md:h-[260px] flex items-center justify-center p-4">
+        <div className="relative bg-[#F8FAFC] h-[200px] md:h-[260px] flex items-center justify-center p-4 overflow-hidden">
           <Image
             src={product.image}
             alt={product.title}
             width={200}
             height={200}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-contain h-full w-auto"
+            className="object-contain h-full w-auto group-hover:scale-110 transition-transform duration-500 ease-out"
           />
           {badge && (
-            <div className="absolute top-4 left-4">
+            <div className="absolute top-4 left-4 z-10">
               <Badge type={badge} />
             </div>
           )}
-          <button className="absolute top-3 right-3 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center shadow-md hover:bg-white transition-colors">
+          <button className="absolute top-3 right-3 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center shadow-md hover:bg-white hover:scale-110 transition-all duration-200 opacity-0 group-hover:opacity-100">
             <Eye className="w-3.5 h-3.5 text-[#64748B]" />
           </button>
         </div>
@@ -71,7 +71,7 @@ export default function ProductCard({ product, badge }: ProductCardProps) {
           <StarRating rating={product.rating.rate} />
 
           <div className="mt-3 mb-1">
-            <h4 className="text-base font-semibold text-heading tracking-tight line-clamp-1">
+            <h4 className="text-base font-semibold text-heading tracking-tight line-clamp-1 group-hover:text-primary transition-colors">
               {product.title}
             </h4>
             <p className="text-xs font-medium text-[#64748B] uppercase tracking-[0.6px] mt-1">
@@ -92,9 +92,9 @@ export default function ProductCard({ product, badge }: ProductCardProps) {
                   {formatPrice(product.price)}
                 </p>
               </div>
-              <span className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+              <span className="inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:gap-2 transition-all duration-300">
                 View
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                 </svg>
               </span>

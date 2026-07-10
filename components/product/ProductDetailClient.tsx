@@ -236,14 +236,14 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
           {/* Quantity & Wishlist */}
           <div className="flex items-center gap-4 mb-5 lg:mb-6">
             {/* Quantity Selector */}
-            <div className="flex items-center border border-[#E5E7EB] rounded-[10px]">
+            <div className="flex items-center border border-[#E5E7EB] rounded-[10px] flex-1 justify-between">
               <button
                 onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
                 className="w-10 h-12 flex items-center justify-center text-[#64748B] hover:text-primary hover:bg-[#F1F5F9] transition-all duration-200 rounded-l-[10px]"
               >
                 <Minus className="w-4 h-4" />
               </button>
-              <span className="w-12 h-12 flex items-center justify-center text-sm font-medium border-x border-[#E5E7EB]">
+              <span className="flex-1 h-12 flex items-center justify-center text-sm font-medium border-x border-[#E5E7EB]">
                 {quantity}
               </span>
               <button
@@ -257,7 +257,7 @@ export default function ProductDetailClient({ productId }: ProductDetailClientPr
             {/* Wishlist Button */}
             <button
               onClick={() => setIsWishlisted(!isWishlisted)}
-              className={`flex items-center gap-2 px-6 h-12 border rounded-[10px] transition-all duration-300 ${
+              className={`flex items-center justify-center gap-2 flex-1 h-12 border rounded-[10px] transition-all duration-300 ${
                 isWishlisted
                   ? "border-red-500 bg-red-50 text-red-500"
                   : "border-[#E5E7EB] hover:border-primary text-[#64748B]"

@@ -12,6 +12,20 @@ The application fetches product data from FakeStore API and presents it through 
 
 [![Email](https://img.shields.io/badge/Email-ahmad@kubagus.my.id-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:ahmad@kubagus.my.id)
 
+## Screenshots
+
+### Web (Desktop)
+
+| Homepage | Product Detail | Cart |
+|----------|---------------|------|
+| ![Web Homepage](screenshots/web-homepage.png) | ![Web Detail](screenshots/web-detailpage.png) | ![Web Cart](screenshots/web-cartpage.png) |
+
+### Mobile
+
+| Homepage | Product Detail | Cart |
+|----------|---------------|------|
+| ![Mobile Homepage](screenshots/mobile-homepage.png) | ![Mobile Detail](screenshots/mobile-detailpage.png) | ![Mobile Cart](screenshots/mobile-cartpage.png) |
+
 ## Technologies Used
 
 This project leverages several modern technologies to demonstrate best practices in frontend development:

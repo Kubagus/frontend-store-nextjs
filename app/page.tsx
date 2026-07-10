@@ -1,8 +1,14 @@
 import HomeClient from "@/components/home/HomeClient";
 import { getAllProducts } from "@/lib/api";
 
-export default async function Home() {
-  const products = await getAllProducts();
+// Force dynamic rendering - fetch on every request
+export const dynamic = "force-dynamic";
 
-  return <HomeClient initialProducts={products} />;
+export default async function Home() {
+  try {
+    const products = await getAllProducts();
+    return <HomeClient initialProducts={products} />;
+  } catch (error) {
+    return <HomeClient initialProducts={[]} />;
+  }
 }

@@ -53,11 +53,11 @@ export default function CartClient() {
     <div className="min-h-screen flex flex-col">
       <div className="max-w-[1440px] mx-auto w-full px-4 md:px-8 lg:px-[248px] py-8 md:py-12">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl md:text-3xl font-semibold text-heading">Shopping Cart</h1>
+        <div className="flex items-center justify-between mb-6 md:mb-8">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-heading">Shopping Cart</h1>
           <button
             onClick={() => dispatch(clearCart())}
-            className="text-sm text-red-500 hover:text-red-600 transition-colors"
+            className="text-xs sm:text-sm text-red-500 hover:text-red-600 transition-colors"
           >
             Clear Cart
           </button>
@@ -70,82 +70,149 @@ export default function CartClient() {
           <span className="text-primary font-medium">Cart</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 lg:gap-8 items-start">
           {/* Cart Items */}
           <div className="space-y-4">
             {cartItems.map((item) => (
               <div
                 key={item.id}
-                className="flex gap-4 p-4 bg-white border border-[#E5E7EB] rounded-xl shadow-sm hover:shadow-md transition-shadow animate-fade-in"
+                className="bg-white border border-[#E5E7EB] rounded-xl shadow-sm hover:shadow-md transition-shadow animate-fade-in overflow-hidden"
               >
-                {/* Image */}
-                <div className="relative w-24 h-24 md:w-32 md:h-32 bg-[#F8FAFC] rounded-lg flex-shrink-0 overflow-hidden">
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    fill
-                    sizes="128px"
-                    className="object-contain p-2"
-                  />
-                </div>
+                {/* Mobile Layout */}
+                <div className="md:hidden p-4">
+                  <div className="flex gap-3">
+                    {/* Image */}
+                    <div className="relative w-20 h-20 bg-[#F8FAFC] rounded-lg flex-shrink-0 overflow-hidden">
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        fill
+                        sizes="80px"
+                        className="object-contain p-1"
+                      />
+                    </div>
 
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <Link
-                    href={`/product/${item.id}`}
-                    className="text-sm md:text-base font-semibold text-heading hover:text-primary transition-colors line-clamp-1"
-                  >
-                    {item.title}
-                  </Link>
-                  <p className="text-xs text-[#64748B] uppercase mt-1">{item.category}</p>
-                  
-                  <p className="text-lg font-semibold text-primary mt-2">
-                    {formatPrice(item.price)}
-                  </p>
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <Link
+                        href={`/product/${item.id}`}
+                        className="text-sm font-semibold text-heading hover:text-primary transition-colors line-clamp-1"
+                      >
+                        {item.title}
+                      </Link>
+                      <p className="text-[10px] text-[#64748B] uppercase mt-0.5">{item.category}</p>
+                      <p className="text-base font-semibold text-primary mt-1">
+                        {formatPrice(item.price)}
+                      </p>
+                    </div>
+                  </div>
 
-                  <div className="flex items-center justify-between mt-3">
+                  {/* Bottom Row: Quantity, Price, Remove */}
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#E5E7EB]">
                     {/* Quantity Controls */}
                     <div className="flex items-center border border-[#E5E7EB] rounded-lg">
                       <button
                         onClick={() => dispatch(updateQuantity({ id: item.id, quantity: Math.max(1, item.quantity - 1) }))}
-                        className="w-8 h-8 flex items-center justify-center text-[#64748B] hover:text-primary hover:bg-[#F1F5F9] transition-all rounded-l-lg"
+                        className="w-7 h-7 flex items-center justify-center text-[#64748B] hover:text-primary hover:bg-[#F1F5F9] transition-all rounded-l-lg"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
-                      <span className="w-10 h-8 flex items-center justify-center text-sm font-medium border-x border-[#E5E7EB]">
+                      <span className="w-8 h-7 flex items-center justify-center text-xs font-medium border-x border-[#E5E7EB]">
                         {item.quantity}
                       </span>
                       <button
                         onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))}
-                        className="w-8 h-8 flex items-center justify-center text-[#64748B] hover:text-primary hover:bg-[#F1F5F9] transition-all rounded-r-lg"
+                        className="w-7 h-7 flex items-center justify-center text-[#64748B] hover:text-primary hover:bg-[#F1F5F9] transition-all rounded-r-lg"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
                     </div>
 
-                    {/* Remove Button */}
-                    <button
-                      onClick={() => dispatch(removeFromCart(item.id))}
-                      className="flex items-center gap-1 text-xs text-red-500 hover:text-red-600 transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Remove
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <p className="text-sm font-semibold text-heading">
+                        {formatPrice(item.price * item.quantity)}
+                      </p>
+                      <button
+                        onClick={() => dispatch(removeFromCart(item.id))}
+                        className="p-1.5 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
 
-                {/* Item Total */}
-                <div className="hidden md:flex flex-col items-end justify-between">
-                  <p className="text-lg font-semibold text-heading">
-                    {formatPrice(item.price * item.quantity)}
-                  </p>
+                {/* Desktop Layout */}
+                <div className="hidden md:flex gap-4 p-4">
+                  {/* Image */}
+                  <div className="relative w-32 h-32 bg-[#F8FAFC] rounded-lg flex-shrink-0 overflow-hidden">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      sizes="128px"
+                      className="object-contain p-2"
+                    />
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <Link
+                      href={`/product/${item.id}`}
+                      className="text-base font-semibold text-heading hover:text-primary transition-colors line-clamp-1"
+                    >
+                      {item.title}
+                    </Link>
+                    <p className="text-xs text-[#64748B] uppercase mt-1">{item.category}</p>
+                    
+                    <p className="text-lg font-semibold text-primary mt-2">
+                      {formatPrice(item.price)}
+                    </p>
+
+                    <div className="flex items-center justify-between mt-3">
+                      {/* Quantity Controls */}
+                      <div className="flex items-center border border-[#E5E7EB] rounded-lg">
+                        <button
+                          onClick={() => dispatch(updateQuantity({ id: item.id, quantity: Math.max(1, item.quantity - 1) }))}
+                          className="w-8 h-8 flex items-center justify-center text-[#64748B] hover:text-primary hover:bg-[#F1F5F9] transition-all rounded-l-lg"
+                        >
+                          <Minus className="w-3 h-3" />
+                        </button>
+                        <span className="w-10 h-8 flex items-center justify-center text-sm font-medium border-x border-[#E5E7EB]">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))}
+                          className="w-8 h-8 flex items-center justify-center text-[#64748B] hover:text-primary hover:bg-[#F1F5F9] transition-all rounded-r-lg"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </button>
+                      </div>
+
+                      {/* Remove Button */}
+                      <button
+                        onClick={() => dispatch(removeFromCart(item.id))}
+                        className="flex items-center gap-1 text-xs text-red-500 hover:text-red-600 transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Item Total */}
+                  <div className="flex flex-col items-end justify-between">
+                    <p className="text-lg font-semibold text-heading">
+                      {formatPrice(item.price * item.quantity)}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
           {/* Order Summary */}
-          <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-sm sticky top-24">
+          <div className="bg-white border border-[#E5E7EB] rounded-xl p-5 md:p-6 shadow-sm lg:sticky lg:top-24">
             <h3 className="text-lg font-semibold text-heading mb-4">Order Summary</h3>
             
             <div className="space-y-3 mb-4">

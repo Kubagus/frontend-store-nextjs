@@ -16,9 +16,11 @@ The application fetches product data from FakeStore API and presents it through 
 
 ### Web (Desktop)
 
-| Homepage | Product Detail | Cart |
-|----------|---------------|------|
-| ![Web Homepage](screenshots/web-homepage.png) | ![Web Detail](screenshots/web-detailpage.png) | ![Web Cart](screenshots/web-cartpage.png) |
+![Web Homepage](screenshots/web-homepage.png)
+
+![Web Detail](screenshots/web-detailpage.png)
+
+![Web Cart](screenshots/web-cartpage.png)
 
 ### Mobile
 

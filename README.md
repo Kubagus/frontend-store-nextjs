@@ -60,7 +60,7 @@ Before beginning the installation process, ensure your development environment m
 Open your terminal and execute the following command to clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/Kubagus/frontend-rekadigital.git
+git clone https://github.com/Kubagus/frontend-store-nextjs.git
 ```
 
 Navigate into the project directory:

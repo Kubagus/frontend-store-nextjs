@@ -66,7 +66,7 @@ git clone https://github.com/Kubagus/frontend-store-nextjs.git
 Navigate into the project directory:
 
 ```bash
-cd frontend-rekadigital
+cd frontend-store-nextjs
 ```
 
 ### Step 2: Install Dependencies
@@ -128,7 +128,7 @@ The `build` command creates an optimized production build, and the `start` comma
 The project follows a feature-based architecture pattern, organizing code by domain rather than by type. This approach improves code discoverability and maintains clear boundaries between different features of the application.
 
 ```
-frontend-rekadigital/
+frontend-store-nextjs/
 ├── app/                              # Next.js App Router directory
 │   ├── layout.tsx                    # Root layout wrapping all pages with providers
 │   ├── globals.css                   # Global styles, animations, and Tailwind configuration

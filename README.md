@@ -110,7 +110,7 @@ Once the server starts successfully, open your web browser and navigate to:
 http://localhost:3000
 ```
 
-The application will automatically reload when you make changes to the source code, providing a seamless development experience.
+The application will automatically reload when you make changes to the source code, providing a seamless development experience
 
 ### Step 5: Build for Production
 
